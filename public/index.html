@@ -1,0 +1,119 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <script src="//unpkg.com/alpinejs" defer></script>
+    <script src="https://unpkg.com/axios@1.1.2/dist/axios.min.js"></script>
+    <link rel="stylesheet" href="styles.css" />
+</head>
+<h1>Bootcamp widgets</h1>
+<body>
+    <div x-data="{
+      sentence:'',
+      longestWord:'',
+      shortestWord:'',
+      wordCount:'',
+      sms:'',
+      call:'',
+      checkSentence(){
+               axios.get(`/api/word_game?sentence=${this.sentence}`)
+               .then((result)=>{
+                console.log(result.data)
+                console.log(result.data.shortestWord)
+                this.longestWord=result.data.longestWord;
+                this.shortestWord=result.data.shortestWord;
+                this.wordCount=result.data.Sum
+               })
+      },
+      
+    }">
+   
+        <div>
+            <textarea x-model="sentence" cols="40" rows="5"></textarea>
+            <div>
+                <button x-on:click="checkSentence">Check Word</button>
+            </div>
+        </div>
+        <div class="line1">
+            <div class="line">
+                Shortest Word: <span x-text="shortestWord"></span>
+            </div>
+
+            <div class="line">
+                Longest Word: <span x-text="longestWord"></span>
+            </div>
+
+            <div class="line">
+                Word Count: <span x-text="wordCount"></span>
+            </div>
+        </div>
+    </div>
+    <hr>
+    <br>
+    <div x-data="
+    { strbill:'',
+      billMessage:'',
+      type:'',
+      price:0,
+      checkBill(){
+      axios
+      .get(`/api/phonebill/prices?strbill=${this.strbill}`)
+      .then((result)=>{
+        this.billMessage=result.data.bill;
+        console.log(this.billMessage+ '-----')
+        console.log(result.data.bill)
+      })
+    }
+  
+  }
+    ">
+        <div>
+            <input x-model="strbill" placeholder="enter 'sms', 'call'"></input>
+            <br>
+            <button x-on:click="checkBill()">check bill</button>
+        </div>
+        <div>
+            <span>Bill is: </span><span x-text="billMessage"></span>
+        </div>
+        <br>
+        <hr>
+        <div x-data="{
+        usage: '',
+        available: '',
+        billMessage: '',
+
+        enoughAirtimeBill(){
+            axios
+            .get(`/api/enoughAirtime?usage=${this.usage}&available=${this.available}`)
+            .then((result) => {
+                if(result.data.error){
+                    alert(result.data.error);
+                }
+                else{
+                    this.billMessage = result.data.total;
+                setTimeout(()=>{
+                    this.usage = '';
+                    this.available = '';
+                },5000);
+                }
+            })
+        }
+      }">
+            <label for="usage">Enter usage: </label>
+            <br>
+            <input type="text" placeholder="call,sms,data" x-model="usage">
+            <br>
+            <label for="available">Enter your Amount: </label>
+            <br>
+            <input type="number" placeholder="R0.00" x-model="available">
+            <br>
+            <button x-on:click="enoughAirtimeBill()"> Enter</button>
+            <br>
+            <span>Price is:</span> <span x-show="billMessage.length > 0" x-text="billMessage"></span>
+        </div>
+    </div>
+</body>
+
+</html>

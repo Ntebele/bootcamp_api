@@ -1,21 +1,28 @@
-export default function enoughAirtime(usage,airtimeAvailable){
-    var usageItems=usage.split(',');
-    var calls=0;
-    var smses=0;
-    var bundles=0;
-    for(var i=0; i<usageItems.length;i++){
-      if(usageItems[i].trim()=="call"){
-        calls=calls+1.88;
-      }else if(usageItems[i].trim()=="data"){
-        bundles=bundles+12;
-      }else if(usageItems[i].trim()=="sms"){
-        smses=smses+0.75;
-      }
-    }
-    var totalusage=calls+bundles+smses;
-    airtimeAvailable=airtimeAvailable-totalusage;
-    if(airtimeAvailable<=0)
-      return "R0.00"
-     else
-       return "R"+airtimeAvailable.toFixed(2);
+export default function enoughAirtime(str,airtime){
+  const newArrayList=str.split(",");
+  let call=1.88;
+  let data=12;
+  let sms=0.75;
+  let total=0;
+  let costs=0;
+  for(let i=0;i<newArrayList.length;i++){
+   if(newArrayList[i].includes("sms")){
+     total+=sms;
+     costs=airtime-total;
+   }
+    else if(newArrayList[i].includes("call")){
+     total+=call;
+     costs=airtime-total
+   }
+    else if(newArrayList[i].includes("data")){
+     total+=data;
+     costs=airtime-total
+   }
   }
+   if(costs<0){
+   return "R0.00"
+   }
+  else{
+   return "R"+costs.toFixed(2);
+  }
+}
